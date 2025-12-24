@@ -3,51 +3,46 @@ body {
     font-family: Arial, sans-serif;
     background: #f0f0f0;
 }
-.hidden { display: none; }
 
-#login {
-    height: 100vh;
+.scene {
+    position: absolute;
+    inset: 0;
     background: white;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
-#login input, #login button {
+
+.hidden {
+    display: none;
+}
+
+h1, h2 {
+    margin-top: 0;
+}
+
+input, button {
     padding: 10px;
     font-size: 16px;
     margin-top: 10px;
 }
 
-#home, #chat {
-    height: 100vh;
+#contactList button {
+    margin-top: 5px;
+}
+
+.chat-header {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
 }
-
-#header, #chatHeader {
-    background: #111;
-    color: white;
-    padding: 12px;
-    font-size: 22px;
-}
-
-#contacts, #messages {
-    flex: 1;
-    background: white;
-    overflow-y: auto;
-}
-
-.contact {
-    padding: 12px;
-    border-bottom: 1px solid #ccc;
-    cursor: pointer;
-}
-.contact:hover { background: #eee; }
 
 #messages {
+    flex: 1;
     background: #e5e5e5;
     padding: 10px;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
 }
@@ -57,8 +52,9 @@ body {
     padding: 8px;
     margin-bottom: 1px;
     border-radius: 8px;
-    font-size: 14px;
     white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 14px;
 }
 
 .left {
@@ -66,17 +62,22 @@ body {
     color: white;
     align-self: flex-start;
 }
+
 .right {
     background: #ccc;
+    color: black;
     align-self: flex-end;
 }
 
-#sendArea {
-    display: flex;
-    padding: 10px;
-    background: #ddd;
+.read-more {
+    font-size: 12px;
+    color: blue;
+    cursor: pointer;
+    margin-top: 4px;
 }
-#messageInput {
-    flex: 1;
-    padding: 8px;
+
+.send-area {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
 }
