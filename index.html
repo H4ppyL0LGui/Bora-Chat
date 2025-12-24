@@ -7,34 +7,45 @@
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="login">
+<!-- CENÁRIO LOGIN -->
+<div id="scene-login" class="scene">
     <h2>Digite seu nome</h2>
     <input id="nameInput" placeholder="Seu nome">
-    <button id="confirmBtn">Confirmar</button>
+    <button onclick="confirmName()">Confirmar</button>
 </div>
 
-<!-- HOME -->
-<div id="home" class="hidden">
-    <div id="header">Bora Chat</div>
-    <button id="addContactBtn">Adicionar Contato</button>
-    <div id="contacts"></div>
+<!-- CENÁRIO HOME -->
+<div id="scene-home" class="scene hidden">
+    <h1>Bora Chat</h1>
+    <button onclick="openAddContact()">Adicionar Contato</button>
+    <div id="contactList"></div>
 </div>
 
-<!-- CHAT -->
-<div id="chat" class="hidden">
-    <div id="chatHeader">
-        <span id="backBtn">⬅</span>
-        <span id="chatName"></span>
+<!-- CENÁRIO ADICIONAR -->
+<div id="scene-add" class="scene hidden">
+    <h2>Adicionar Contato</h2>
+    <input id="contactNameInput" placeholder="Nome do contato">
+    <input id="contactIdInput" placeholder="ID (9 dígitos)">
+    <button onclick="addContact()">Adicionar</button>
+    <button onclick="goHome()">Voltar</button>
+    <p id="addError"></p>
+</div>
+
+<!-- CENÁRIO CHAT -->
+<div id="scene-chat" class="scene hidden">
+    <div class="chat-header">
+        <button onclick="goHome()">⬅</button>
+        <span id="chatTitle"></span>
     </div>
+
     <div id="messages"></div>
-    <div id="sendArea">
+
+    <div class="send-area">
         <input id="messageInput" maxlength="100" placeholder="Digite a mensagem">
-        <button id="sendBtn">Enviar</button>
+        <button onclick="sendMessage()">Enviar</button>
     </div>
 </div>
 
-<!-- Firebase -->
-<script type="module" src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
