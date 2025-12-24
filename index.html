@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Bora Chat</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="login">
+    <h2>Digite seu nome</h2>
+    <input id="nameInput" placeholder="Seu nome">
+    <button onclick="confirmName()">Confirmar</button>
+</div>
+
+<div id="home" class="hidden">
+    <div id="header">Bora Chat</div>
+    <button onclick="addContact()">Adicionar Contato</button>
+    <div id="contacts"></div>
+</div>
+
+<div id="chat" class="hidden">
+    <div id="chatHeader">
+        <span onclick="goHome()">⬅</span>
+        <span id="chatName"></span>
+    </div>
+    <div id="messages"></div>
+    <div id="sendArea">
+        <input id="messageInput" maxlength="100">
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>
