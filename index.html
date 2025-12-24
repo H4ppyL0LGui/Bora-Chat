@@ -7,34 +7,34 @@
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="login">
     <h2>Digite seu nome</h2>
     <input id="nameInput" placeholder="Seu nome">
-    <button onclick="confirmName()">Confirmar</button>
+    <button id="confirmBtn">Confirmar</button>
 </div>
 
+<!-- HOME -->
 <div id="home" class="hidden">
     <div id="header">Bora Chat</div>
-    <button onclick="addContact()">Adicionar Contato</button>
+    <button id="addContactBtn">Adicionar Contato</button>
     <div id="contacts"></div>
 </div>
 
+<!-- CHAT -->
 <div id="chat" class="hidden">
     <div id="chatHeader">
-        <span onclick="goHome()">⬅</span>
+        <span id="backBtn">⬅</span>
         <span id="chatName"></span>
     </div>
     <div id="messages"></div>
     <div id="sendArea">
-        <input id="messageInput" maxlength="100">
-        <button onclick="sendMessage()">Enviar</button>
+        <input id="messageInput" maxlength="100" placeholder="Digite a mensagem">
+        <button id="sendBtn">Enviar</button>
     </div>
 </div>
 
 <!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
-
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 </body>
 </html>
