@@ -1,141 +1,181 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-    getFirestore, doc, setDoc, getDoc,
-    addDoc, collection, onSnapshot, query, orderBy
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-/* 🔥 CONFIG FIREBASE (OBRIGATÓRIO PREENCHER) */
-const firebaseConfig = {
-    apiKey: "SUA_API_KEY",
-    authDomain: "SEU_PROJETO.firebaseapp.com",
-    projectId: "SEU_PROJETO",
+/* ===== CENÁRIOS ===== */
+const scenes = {
+    login: document.getElementById("scene-login"),
+    home: document.getElementById("scene-home"),
+    add: document.getElementById("scene-add"),
+    chat: document.getElementById("scene-chat"),
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+function showScene(name) {
+    Object.values(scenes).forEach(s => s.classList.add("hidden"));
+    scenes[name].classList.remove("hidden");
+}
 
-/* ELEMENTOS */
-const login = document.getElementById("login");
-const home = document.getElementById("home");
-const chat = document.getElementById("chat");
-
-const nameInput = document.getElementById("nameInput");
-const confirmBtn = document.getElementById("confirmBtn");
-const addContactBtn = document.getElementById("addContactBtn");
-const contactsDiv = document.getElementById("contacts");
-
-const chatName = document.getElementById("chatName");
-const messagesDiv = document.getElementById("messages");
-const messageInput = document.getElementById("messageInput");
-const sendBtn = document.getElementById("sendBtn");
-const backBtn = document.getElementById("backBtn");
-
-/* ESTADO */
-let user = null;
+/* ===== ESTADO ===== */
+let user = JSON.parse(localStorage.getItem("user"));
+let contacts = JSON.parse(localStorage.getItem("contacts")) || {};
+let chats = JSON.parse(localStorage.getItem("chats")) || {};
 let currentChat = null;
 
-/* EVENTOS */
-confirmBtn.onclick = confirmName;
-sendBtn.onclick = sendMessage;
-backBtn.onclick = goHome;
-addContactBtn.onclick = addContact;
+const BOT_ID = "BOT";
 
-/* FUNÇÕES */
-function generateID() {
-    return Math.floor(100000000 + Math.random() * 900000000).toString();
+/* ===== INIT ===== */
+if (user) {
+    initBoraBot();
+    showScene("home");
+    renderContacts();
 }
 
-async function confirmName() {
-    const name = nameInput.value.trim();
-    if (!name) return alert("Digite um nome");
+/* ===== LOGIN ===== */
+function confirmName() {
+    const name = document.getElementById("nameInput").value.trim();
+    if (!name) return alert("Digite seu nome");
 
-    const id = generateID();
-    user = { name, id };
+    user = { name };
+    localStorage.setItem("user", JSON.stringify(user));
 
-    await setDoc(doc(db, "users", id), user);
-    showHome();
+    initBoraBot();
+    showScene("home");
+    renderContacts();
 }
 
-function showHome() {
-    login.classList.add("hidden");
-    chat.classList.add("hidden");
-    home.classList.remove("hidden");
-    loadContacts();
+/* ===== BORA BOT ===== */
+function initBoraBot() {
+    if (!contacts[BOT_ID]) {
+        contacts[BOT_ID] = { name: "Bora Bot" };
+        chats[BOT_ID] = [{
+            from: BOT_ID,
+            text: "Bem-Vindo ao Bora Chat! Obrigado por usar nosso Site, digite Oi para testar o sistema."
+        }];
+        saveAll();
+    }
 }
 
-function loadContacts() {
-    contactsDiv.innerHTML = "";
-    const usersRef = collection(db, "users");
+/* ===== HOME ===== */
+function renderContacts() {
+    const list = document.getElementById("contactList");
+    list.innerHTML = "";
 
-    onSnapshot(usersRef, snap => {
-        contactsDiv.innerHTML = "";
-        snap.forEach(d => {
-            if (d.id !== user.id) {
-                const div = document.createElement("div");
-                div.className = "contact";
-                div.textContent = d.data().name;
-                div.onclick = () => openChat(d.id, d.data().name);
-                contactsDiv.appendChild(div);
-            }
-        });
-    });
+    for (let id in contacts) {
+        const btn = document.createElement("button");
+        btn.textContent = contacts[id].name;
+        btn.onclick = () => openChat(id);
+        list.appendChild(btn);
+    }
 }
 
-function addContact() {
-    alert("Neste modo global, todos os usuários aparecem automaticamente.");
-}
-
-function openChat(id, name) {
-    currentChat = id;
-    home.classList.add("hidden");
-    chat.classList.remove("hidden");
-    chatName.textContent = name;
-    loadMessages();
+function openAddContact() {
+    document.getElementById("contactNameInput").value = "";
+    document.getElementById("contactIdInput").value = "";
+    document.getElementById("addError").textContent = "";
+    showScene("add");
 }
 
 function goHome() {
-    chat.classList.add("hidden");
-    home.classList.remove("hidden");
+    showScene("home");
+    renderContacts();
 }
 
-function chatID() {
-    return [user.id, currentChat].sort().join("_");
+/* ===== ADICIONAR CONTATO ===== */
+function addContact() {
+    const name = document.getElementById("contactNameInput").value.trim();
+    const id = document.getElementById("contactIdInput").value.trim();
+    const error = document.getElementById("addError");
+
+    if (!name || !id) {
+        error.textContent = "Preencha todos os campos";
+        return;
+    }
+
+    if (id === BOT_ID) {
+        error.textContent = "ID inválido";
+        return;
+    }
+
+    /* Simulação de verificação de ID existente */
+    let users = JSON.parse(localStorage.getItem("users")) || {};
+    if (!users[id]) {
+        document.getElementById("contactIdInput").value = "";
+        error.textContent = "ID não existe";
+        return;
+    }
+
+    contacts[id] = { name };
+    chats[id] = chats[id] || [];
+    saveAll();
+
+    showScene("home");
+    renderContacts();
 }
 
-function loadMessages() {
-    messagesDiv.innerHTML = "";
-    const q = query(
-        collection(db, "chats", chatID(), "messages"),
-        orderBy("time")
-    );
-
-    onSnapshot(q, snap => {
-        messagesDiv.innerHTML = "";
-        snap.forEach(d => {
-            const msg = d.data();
-            const div = document.createElement("div");
-            div.className = "bubble " + (msg.from === user.id ? "right" : "left");
-            div.textContent = formatText(msg.text);
-            messagesDiv.appendChild(div);
-        });
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    });
+/* ===== CHAT ===== */
+function openChat(id) {
+    currentChat = id;
+    document.getElementById("chatTitle").textContent = contacts[id].name;
+    showScene("chat");
+    loadMessages();
 }
 
-async function sendMessage() {
-    const text = messageInput.value.trim();
+function sendMessage() {
+    const input = document.getElementById("messageInput");
+    let text = input.value.trim();
     if (!text || !currentChat) return;
 
-    await addDoc(
-        collection(db, "chats", chatID(), "messages"),
-        {
-            text,
-            from: user.id,
-            time: Date.now()
-        }
-    );
+    chats[currentChat].push({ from: "me", text });
 
-    messageInput.value = "";
+    if (currentChat === BOT_ID && text.toLowerCase() === "oi") {
+        botReply();
+    }
+
+    input.value = "";
+    saveAll();
+    loadMessages();
+}
+
+/* ===== BORA BOT RESPOSTA ===== */
+function botReply() {
+    const d = new Date();
+    let reply = "Oi";
+
+    if (d.getMonth() === 11 && (d.getDate() === 24 || d.getDate() === 25))
+        reply = "Oi, Feliz Natal!!";
+    else if (
+        (d.getMonth() === 11 && d.getDate() === 31) ||
+        (d.getMonth() === 0 && d.getDate() === 1)
+    )
+        reply = "Oi, Feliz ano-novo!!!";
+
+    chats[BOT_ID].push({ from: BOT_ID, text: reply });
+}
+
+/* ===== MENSAGENS ===== */
+function loadMessages() {
+    const box = document.getElementById("messages");
+    box.innerHTML = "";
+
+    (chats[currentChat] || []).forEach(msg => {
+        const div = document.createElement("div");
+        div.className = "bubble " + (msg.from === "me" ? "right" : "left");
+
+        if (msg.text.length > 50) {
+            const short = msg.text.slice(0, 50);
+            div.textContent = formatText(short);
+
+            const more = document.createElement("div");
+            more.className = "read-more";
+            more.textContent = "Ler mais";
+            more.onclick = () => {
+                div.textContent = formatText(msg.text);
+            };
+            div.appendChild(more);
+        } else {
+            div.textContent = formatText(msg.text);
+        }
+
+        box.appendChild(div);
+    });
+
+    box.scrollTop = box.scrollHeight;
 }
 
 function formatText(text) {
@@ -144,4 +184,10 @@ function formatText(text) {
         out += text.slice(i, i + 27) + "\n";
     }
     return out.trim();
+}
+
+/* ===== SAVE ===== */
+function saveAll() {
+    localStorage.setItem("contacts", JSON.stringify(contacts));
+    localStorage.setItem("chats", JSON.stringify(chats));
 }
