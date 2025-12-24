@@ -1,0 +1,43 @@
+body { margin:0; font-family:Arial; background:#f0f0f0 }
+.hidden { display:none }
+
+#login, #home, #chat {
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+#login {
+    justify-content:center;
+    align-items:center;
+    background:white;
+}
+
+#header, #chatHeader {
+    background:#111;
+    color:white;
+    padding:10px;
+    font-size:20px;
+}
+
+#contacts, #messages {
+    flex:1;
+    overflow-y:auto;
+    background:white;
+}
+
+.contact {
+    padding:10px;
+    border-bottom:1px solid #ccc;
+    cursor:pointer;
+}
+
+.bubble {
+    max-width:70%;
+    padding:8px;
+    margin:4px;
+    border-radius:8px;
+}
+
+.left { background:#555; color:white }
+.right { background:#ccc; margin-left:auto }
