@@ -4,6 +4,7 @@ const scenes = {
     home: document.getElementById("scene-home"),
     add: document.getElementById("scene-add"),
     chat: document.getElementById("scene-chat"),
+    profile: document.getElementById("scene-profile")
 };
 
 function showScene(name) {
@@ -27,16 +28,34 @@ if (user) {
 }
 
 /* ===== LOGIN ===== */
+function generateUserID() {
+    return Math.floor(100000000 + Math.random() * 900000000).toString();
+}
+
 function confirmName() {
     const name = document.getElementById("nameInput").value.trim();
     if (!name) return alert("Digite seu nome");
 
-    user = { name };
+    user = {
+        name,
+        id: generateUserID()
+    };
+
     localStorage.setItem("user", JSON.stringify(user));
 
     initBoraBot();
     showScene("home");
     renderContacts();
+}
+
+/* ===== PERFIL ===== */
+function openProfile() {
+    document.getElementById("profileName").textContent =
+        "Nome: " + user.name;
+    document.getElementById("profileId").textContent =
+        "ID: " + user.id;
+
+    showScene("profile");
 }
 
 /* ===== BORA BOT ===== */
@@ -87,16 +106,8 @@ function addContact() {
         return;
     }
 
-    if (id === BOT_ID) {
-        error.textContent = "ID inválido";
-        return;
-    }
-
-    /* Simulação de verificação de ID existente */
-    let users = JSON.parse(localStorage.getItem("users")) || {};
-    if (!users[id]) {
-        document.getElementById("contactIdInput").value = "";
-        error.textContent = "ID não existe";
+    if (id === user.id) {
+        error.textContent = "Você não pode adicionar seu próprio ID";
         return;
     }
 
@@ -118,8 +129,8 @@ function openChat(id) {
 
 function sendMessage() {
     const input = document.getElementById("messageInput");
-    let text = input.value.trim();
-    if (!text || !currentChat) return;
+    const text = input.value.trim();
+    if (!text) return;
 
     chats[currentChat].push({ from: "me", text });
 
@@ -142,7 +153,7 @@ function botReply() {
     else if (
         (d.getMonth() === 11 && d.getDate() === 31) ||
         (d.getMonth() === 0 && d.getDate() === 1)
-    )
+        )
         reply = "Oi, Feliz ano-novo!!!";
 
     chats[BOT_ID].push({ from: BOT_ID, text: reply });
