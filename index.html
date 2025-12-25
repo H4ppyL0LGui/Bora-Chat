@@ -16,9 +16,26 @@
 
 <!-- CENÁRIO HOME -->
 <div id="scene-home" class="scene hidden">
-    <h1>Bora Chat</h1>
+    <div class="top-bar">
+        <span class="title">Bora Chat</span>
+        <button class="profile-btn" onclick="openProfile()">Perfil</button>
+    </div>
+
     <button onclick="openAddContact()">Adicionar Contato</button>
     <div id="contactList"></div>
+</div>
+
+<!-- CENÁRIO PERFIL -->
+<div id="scene-profile" class="scene hidden">
+    <div class="top-bar">
+        <button onclick="goHome()">⬅</button>
+        <span class="title">Perfil</span>
+    </div>
+
+    <div class="profile-info">
+        <p id="profileName"></p>
+        <p id="profileId"></p>
+    </div>
 </div>
 
 <!-- CENÁRIO ADICIONAR -->
@@ -33,9 +50,9 @@
 
 <!-- CENÁRIO CHAT -->
 <div id="scene-chat" class="scene hidden">
-    <div class="chat-header">
+    <div class="top-bar">
         <button onclick="goHome()">⬅</button>
-        <span id="chatTitle"></span>
+        <span id="chatTitle" class="title"></span>
     </div>
 
     <div id="messages"></div>
