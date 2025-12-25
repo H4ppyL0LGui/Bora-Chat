@@ -8,7 +8,7 @@ body {
     position: absolute;
     inset: 0;
     background: white;
-    padding: 20px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
 }
@@ -17,8 +17,20 @@ body {
     display: none;
 }
 
-h1, h2 {
-    margin-top: 0;
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.profile-btn {
+    padding: 6px 10px;
 }
 
 input, button {
@@ -31,11 +43,9 @@ input, button {
     margin-top: 5px;
 }
 
-.chat-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+.profile-info {
+    margin-top: 40px;
+    font-size: 18px;
 }
 
 #messages {
